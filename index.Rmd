@@ -15,7 +15,7 @@ library(treemap)
 library(networkD3)
 ```
 
-## Analysis of application data from new students
+## Analysis of application data from new students (work in progress)
 
 ### Import data
 
@@ -29,7 +29,9 @@ Inspect data structure
 str(dataset)
 ```
 
-### Descriptive analysis
+### Descriptive statistics
+
+First of all, descriptive statistics by nationality, college, department, and degree are presented.
 
 By nationality
 
@@ -103,6 +105,14 @@ dataset %>%
 
 
 #### Relation analysis
+
+The relation between two variables are presented here.
+
+- Nationality and College
+- Nationality and Department
+- Nationality and Degree
+- Department and Degree
+
 
 Relation between nationality and college
 

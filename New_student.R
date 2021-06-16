@@ -1,6 +1,9 @@
 library(xlsx)
 library(tidyverse)
 library(ggplot2)
+library(htmlwidgets)
+library(webshot)
+library(networkD3)
 
 dataset <- read.xlsx("application_data.xlsx","Sheet1",header=TRUE)
 
@@ -151,6 +154,8 @@ p <- sankeyNetwork(Links = links, Nodes = nodes,
                    fontSize = 14,fontFamily ="sans-serif",
                    sinksRight=FALSE)
 p
+saveWidget(p, file="N_Dept.html")
+webshot("N_Dept.html","N_Dept.png", vwidth = 1000, vheight = 900)
 
 # D_Dept
 links <- dataset %>%
@@ -169,11 +174,5 @@ p <- sankeyNetwork(Links = links, Nodes = nodes,
                    fontSize = 14,fontFamily ="sans-serif",
                    sinksRight=FALSE)
 p
-
-library(htmlwidgets)
-saveWidget(p, file="aaa.html")
-# you save it as an html
-
-library(webshot)
-library(phantomjs)# you convert it as png
-webshot("aaa.html","aa.png", vwidth = 1000, vheight = 900)
+saveWidget(p, file="D_Dept.html")
+webshot("D_Dept.html","D_Dept.png", vwidth = 1000, vheight = 900)
