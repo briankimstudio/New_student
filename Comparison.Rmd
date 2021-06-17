@@ -1,0 +1,55 @@
+---
+title: "Comparison between NCHU and FCU"
+author: "Brian"
+date: "6/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Nationality
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_Nationality.svg",
+    "FCU_Nationality.svg")
+)
+```
+
+College
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_College.svg",
+    "FCU_College.svg")
+)
+```
+
+Department
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_Department.svg",
+    "FCU_Department.svg")
+)
+```
+
+Degree
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_Degree.svg",
+    "FCU_Degree.svg")
+)
+```
+
+<!-- Nationality, department -->
+
+<!-- ```{r, echo=FALSE, out.width="100%", fig.align = "left", fig.show='hold', fig.cap="NCHU(top) vs FCU(bottom)"} -->
+<!-- knitr::include_graphics( -->
+<!--   c("NCHU_Nationality_Department_.png", -->
+<!--     "FCU_Nationality_Department_.png") -->
+<!-- ) -->
+<!-- ``` -->
