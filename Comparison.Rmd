@@ -9,6 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Analysis of application data from new students (work in progress)
+ 
+The results are from data of 'admitted' international students, which is not identical to the 'enrolled' international students. NCHU's data is for 2021, whereas FCU's data is for 2020. It is because FCU's 2021 data is not accessible at this moment. 
+
 Nationality
 
 ```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
