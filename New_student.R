@@ -16,7 +16,7 @@ drawTreemap <- function(ds, prefix, item) {
     treemap(index="tmp",vSize="n", title=item)
   dev.off()
 }
-mSankey <- function(x,prefix,...) {
+mSankey2 <- function(x,prefix,...) {
   vList<-list(...)
   end <- length(vList)-1
   results <- x %>%
@@ -71,10 +71,62 @@ mSankey <- function(x,prefix,...) {
   # show(filename)
   filename <- paste0(prefix,"_",filename)
   saveWidget(p, file=paste0(filename,".html"))
-  webshot(paste0(filename,".html"),paste0(filename,".png"), vwidth = 1500, vheight = 900,cliprect = "viewport")
+  # webshot(paste0(filename,".html"),paste0(filename,".png"), vwidth = 1500, vheight = 900,cliprect = "viewport")
+  webshot(paste0(filename,".html"),paste0(filename,".png"),cliprect = "viewport")
 }
 
-dataset <- read.xlsx("application_data.xlsx","Sheet1",header=TRUE)
+mSankey <- function(x,prefix,...) {
+  vList<-list(...)
+  end <- length(vList)-1
+  results <- x %>%
+    group_by(!!sym(vList[[1]]),!!sym(vList[[2]])) %>%
+    count()
+  names(results) <- c("source","target","value")
+  # show(results)  
+  if ( end >= 2) {
+    for (i in 2:end) {
+      show(paste(vList[[i]],vList[[i+1]]))
+      tmp <- x %>%
+        group_by(!!sym(vList[[i]]),!!sym(vList[[i+1]])) %>%
+        count()
+      names(tmp) <- c("source","target","value")
+      results <-bind_rows(results,tmp)
+    }
+  }
+  # show(results)
+  links <- results
+  nodes <- data.frame(
+    name=c(as.character(links$source),
+           as.character(links$target)) %>% unique()
+  )
+  links$IDsource <- match(links$source, nodes$name)-1
+  links$IDtarget <- match(links$target, nodes$name)-1
+  p <- sankeyNetwork(Links = links, Nodes = nodes,
+                     Source = "IDsource", Target = "IDtarget",
+                     Value = "value", NodeID = "name",
+                     fontSize = 14,fontFamily ="sans-serif",
+                     LinkGroup="source",NodeGroup="name",
+                     JS("d3.scaleOrdinal(d3.schemeCategory20);"),
+                     width=1000,height=720,
+                     sinksRight=FALSE)
+  
+  p$x$nodes$source <- nodes$name %in% links$source
+  
+  p <- onRender(p,
+                '
+  function(el) {
+    d3.select(el)
+      .selectAll(".node text")
+      .filter(d => d.source)
+      .attr("x",-6)
+      .attr("text-anchor", "end");
+  }
+  '
+  )
+  p
+}
+
+dataset <- read.xlsx("NCHU_2021.xlsx","Sheet1",header=TRUE)
 dataset <- dataset %>%
   mutate(College = str_remove(College,"College of ")) %>%
   mutate(Department = str_remove(Department,"Department of "))
@@ -94,7 +146,7 @@ mSankey(dataset,prefix,"Nationality","College","Department")
 mSankey(dataset,prefix,"Degree","Nationality","College")
 mSankey(dataset,prefix,"Degree","Nationality","Department")
 
-dataset <- read.xlsx("fcu-2020.xlsx","Sheet1",header=TRUE)
+dataset <- read.xlsx("FCU_2020.xlsx","Sheet1",header=TRUE)
 dataset <- dataset %>%
   mutate(College = str_remove(College,"College of ")) %>%
   mutate(Department = str_remove(Department,"Department of "))
@@ -394,4 +446,44 @@ mSankey(dataset,prefix,"Degree","Nationality","Department")
 #                    Value = "value", NodeID = "name", 
 #                    fontSize = 14,fontFamily ="sans-serif",
 #                    sinksRight=TRUE)
+# p
+
+# dataset <- read.xlsx("NCHU_2021.xlsx","Sheet1",header=TRUE)
+# dataset <- dataset %>%
+#   mutate(College = str_remove(College,"College of ")) %>%
+#   mutate(Department = str_remove(Department,"Department of "))
+# str(dataset)
+# 
+# 
+# # N_C
+# links <- dataset %>%
+#   group_by(Nationality,College) %>%
+#   count()
+# names(links) <- c("source","target","value")
+# nodes <- data.frame(
+#   name=c(as.character(links$source),
+#          as.character(links$target)) %>% unique()
+# )
+# 
+# links$IDsource <- match(links$source, nodes$name)-1
+# links$IDtarget <- match(links$target, nodes$name)-1
+# 
+# 
+# p<-sankeyNetwork(Links = links, Nodes = nodes,
+#                    Source = "IDsource", Target = "IDtarget",
+#                    Value = "value", NodeID = "name",
+#                    fontSize = 14,fontFamily ="sans-serif",
+#                    sinksRight=FALSE)
+# p$x$nodes$source <- nodes$name %in% links$source
+# p <- onRender(p,
+#               '
+#   function(el) {
+#     d3.select(el)
+#       .selectAll(".node text")
+#       .filter(d => d.source)
+#       .attr("x",-4)
+#       .attr("text-anchor", "end");
+#   }
+#   '
+# )
 # p
