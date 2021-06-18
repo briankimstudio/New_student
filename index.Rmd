@@ -78,7 +78,7 @@ Nationality and college
 
 The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular
 
-```{r echo=FALSE, message=FALSE, fig.cap="NCHU"}
+```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="NCHU"}
 prefix <- "NCHU"
 dataset <- read.xlsx("NCHU_2021.xlsx","Sheet1",header=TRUE)
 dataset <- dataset %>%
@@ -88,7 +88,7 @@ mSankey(dataset,prefix,"Nationality","College")
 ```
 
 
-```{r echo=FALSE, message=FALSE, fig.cap="FCU"}
+```{r echo=FALSE, message=FALSE, fig.align = "center",  fig.cap="FCU"}
 prefix <- "FCU"
 dataset <- read.xlsx("FCU_2020.xlsx","Sheet1",header=TRUE)
 dataset <- dataset %>%
