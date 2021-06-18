@@ -1,175 +1,84 @@
 ---
-title: "Trends of international student admission in NCHU"
+title: "Trends in higher education"
 author: "Brian"
-date: "6/16/2021"
+date: "6/17/2021"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,fig.align = 'center')
-options(tibble.print_max = Inf)
-library(xlsx)
-library(tidyverse)
-library(ggplot2)
-library(networkD3)
-library(htmlwidgets)
-library(treemap)
-library(kableExtra)
-source("mSankey.R", local = knitr::knit_global())
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
-We analyzed data of 'admitted' international students in 2021 to discover trends in higher education in Taiwan. (work in progress)
+### Where international students are from and what they study(work in progress)
 
-<!-- #### Import data -->
+We analyzed data of 'admitted' international students from National Chung Hsing University(NCHU,國立中興大學) and Feng Chia University(FCU,逢甲大學). The results show that the trends are very different and international students are pursuing different goals in each university. 
 
-```{r}
-prefix <- "NCHU"
-dataset <- read.xlsx("NCHU_2021.xlsx","Sheet1",header=TRUE)
-dataset <- dataset %>%
-  mutate(College = str_remove(College,"College of ")) %>%
-  mutate(Department = str_remove(Department,"Department of "))
+*For full analysis results, refer to [NCHU](NCHU_admission.html),[FCU](FCU_admission.html).
+
+**Summary**
+
+- Indonesia is ranked first by the number of students in both NCHU and FCU.
+- NCHU attracts more students from India and Pakistan, whereas most Japanese students choose FCU.
+- NCHU is strong in agricultural and natural resources, engineering, but, FCU is focused on international business.
+- NCHU is the place for Master's and Ph.D., however, more students choose CFU for Bachelor's degree.
+
+Nationality
+
+In NCHU, Indonesia is ranked first by the number of students, followed by Vietnam, India, Pakistan, and Malaysia. The first place in FCU is also Indonesia, but, Japan appears to be the second-largest group, followed by Thailand, Vietnam, and India. While Pakistan is ranked in 4th place in NCHU, FCU has no students from the same country.
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_Nationality.svg",
+    "FCU_Nationality.svg")
+)
 ```
 
-<!-- Inspect data structure -->
+College
 
-<!-- ```{r} -->
-<!-- str(dataset) -->
+The college of agricultural and natural resources is the most preferred in NCHU. However, most students choose the college of business in FCU. In other words, while NCHU is strong in science and engineering, FCU shows strength in business.
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_College.svg",
+    "FCU_College.svg")
+)
+```
+
+Department
+
+The two international programs(international bachelor program of agribusiness and international master program of agribusiness) attract a large group of international students in NCHU, followed by marketing, biomedical engineering, and mechanical engineering. In FCU, the pre-major program for international freshman students is ranked 1st, followed by international business, and international business administration in English. In particular, these three departments account for about 50% of all international students in FCU.
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_Department.svg",
+    "FCU_Department.svg")
+)
+```
+
+Degree
+
+Nearly 70% of students are pursuing a Ph.D. or Master's degree in NCHU. By contrast, more than 60% of FCU's students are pursuing bachelor's degree. Only 6% plan to get Ph.D. in FCU. Particularly, all students from Pakistan study for Ph.D. or Master's degree in NCHU.
+
+```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"}
+knitr::include_graphics(
+  c("NCHU_Degree.svg",
+    "FCU_Degree.svg")
+)
+```
+
+<!-- Nationality, department -->
+
+<!-- ```{r, echo=FALSE, out.width="100%", fig.align = "left", fig.show='hold', fig.cap="NCHU(top) vs FCU(bottom)"} -->
+<!-- knitr::include_graphics( -->
+<!--   c("NCHU_Nationality_Department_.png", -->
+<!--     "FCU_Nationality_Department_.png") -->
+<!-- ) -->
 <!-- ``` -->
 
-**Descriptive statistics**
+Note:
 
-First of all, descriptive statistics by nationality, college, department, and degree are presented.
+1. "Admitted' international student indicates someone who has received an acceptance letter from the university.
 
-By nationality
+2. The accuracy of results would be increased if data of ‘enrolled’ international students are analyzed.
 
-```{r}
-dataset %>%
-  count(Nationality, sort=TRUE) %>%
-  mutate(Nationality=paste(Nationality,n,sep="\n")) %>%
-  treemap(index="Nationality",
-      vSize="n", title="Nationality"
-  )
-
-knitr::kable(
-dataset %>%
-  group_by(Nationality) %>%
-  summarise(count = n()) %>%
-  arrange(desc(count)) %>%
-  mutate( "%" = round(count / sum(count) * 100 ,1))
-
-) %>%
-  kable_styling(full_width = F)
-```
-
-By college
-
-```{r}
-dataset %>%
-  count(College, sort=TRUE) %>%
-  mutate(College=paste(College,n,sep="\n")) %>%
-  treemap(index="College",
-      vSize="n", title="College"
-  )
-knitr::kable(
-dataset %>%
-  group_by(College) %>%
-  summarise(count = n()) %>%
-  arrange(desc(count)) %>%
-  mutate( "%" = round(count / sum(count) * 100 ,1))
-) %>%
-  kable_styling(full_width = F)
-```
-
-By department
-
-```{r}
-dataset %>%
-  count(Department, sort=TRUE) %>%
-  mutate(Department=paste(Department,n,sep="\n")) %>%
-  treemap(index="Department",
-      vSize="n", title="Department"
-  )
-knitr::kable(
-dataset %>%
-  group_by(Department) %>%
-  summarise(count = n()) %>%
-  arrange(desc(count)) %>%
-  mutate( "%" = round(count / sum(count) * 100 ,1))
-) %>%
-  kable_styling(full_width = F)
-```
-
-By degree
-
-```{r}
-dataset %>%
-  count(Degree, sort=TRUE) %>%
-  mutate(Degree=paste(Degree,n,sep="\n")) %>%
-  treemap(index="Degree",
-      vSize="n", title="Degree"
-  )
-knitr::kable(
-dataset %>%
-  group_by(Degree) %>%
-  summarise(count = n()) %>%
-  arrange(desc(count)) %>%
-  mutate( "%" = round(count / sum(count) * 100 ,1))
-) %>%
-  kable_styling(full_width = F)
-```
-
-**Interrelationship analysis**
-
-The results of multi-variate analysis are presented here.
-
-- Nationality and college
-- Nationality and department
-- Nationality and degree
-- Department and degree
-- Degree, nationality, and department
-- Degree, nationality, and college
-
-Nationality and college
-
-The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular
-
-```{r echo=FALSE, message=FALSE}
-mSankey(dataset,prefix,"Nationality","College")
-```
-
-Nationality and department
-
-```{r echo=FALSE, message=FALSE}
-mSankey(dataset,prefix,"Nationality","Department")
-```
-
-Nationality and degree
-
-```{r echo=FALSE, message=FALSE}
-mSankey(dataset,prefix,"Nationality","Degree")
-```
-
-Department and degree
-
-```{r echo=FALSE, message=FALSE}
-mSankey(dataset,prefix,"Department","Degree")
-```
-
-Degree, nationality, and department
-
-```{r echo=FALSE, message=FALSE}
-mSankey(dataset,prefix,"Degree","Nationality","Department")
-
-```
-
-<!-- Nationality, college, and department -->
-
-<!-- ```{r echo=FALSE, message=FALSE} -->
-<!-- mSankey(dataset,prefix,"Nationality","College","Department") -->
-<!-- ``` -->
-
-Degree, nationality, college
-
-```{r echo=FALSE, message=FALSE}
-mSankey(dataset,prefix,"Degree","Nationality","College")
-```
+2. NCHU's data(n=250) is for 2021. However, FCU's data(n=365) for 2021 is not available yet, so data for 2020 is used instead.
