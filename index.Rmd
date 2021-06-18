@@ -17,7 +17,7 @@ source("mSankey.R", local = knitr::knit_global())
 
 ### Where international students are from and what they study(work in progress)
 
-We analyzed data of 'admitted' international students from National Chung Hsing University(NCHU,國立中興大學) and Feng Chia University(FCU,逢甲大學). The results show that the trends are very different and international students are pursuing different goals in each university. 
+We analyzed data of 'admitted' international students from [National Chung Hsing University(NCHU,國立中興大學)](https://www.nchu.edu.tw) and [Feng Chia University(FCU,逢甲大學)](https://www.fcu.edu.tw). The results show that the trends are very different and international students are pursuing different goals in each university. 
 
 *For full analysis results, refer to [NCHU](NCHU_admission.html),[FCU](FCU_admission.html).
 

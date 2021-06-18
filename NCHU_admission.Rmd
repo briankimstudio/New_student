@@ -173,3 +173,5 @@ Degree, nationality, college
 ```{r echo=FALSE, message=FALSE}
 mSankey(dataset,prefix,"Degree","Nationality","College")
 ```
+
+Go to [comparison](https://briankimstudio.github.io/New_student/)
