@@ -1,35 +1,42 @@
 ---
-title: "Analysis of application data"
+title: "Trends of international student admission in NCHU"
 author: "Brian"
 date: "6/16/2021"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE,fig.align = 'center')
 options(tibble.print_max = Inf)
 library(xlsx)
 library(tidyverse)
 library(ggplot2)
-library(treemap)
 library(networkD3)
+library(htmlwidgets)
+library(treemap)
+library(kableExtra)
+source("mSankey.R", local = knitr::knit_global())
 ```
 
-## Analysis of application data from new students (work in progress)
+We analyzed data of 'admitted' international students in 2021 to discover trends in higher education in Taiwan. (work in progress)
 
-### Import data
+<!-- #### Import data -->
 
 ```{r}
-dataset <- read.xlsx("application_data.xlsx","Sheet1",header=TRUE)
+prefix <- "NCHU"
+dataset <- read.xlsx("NCHU_2021.xlsx","Sheet1",header=TRUE)
+dataset <- dataset %>%
+  mutate(College = str_remove(College,"College of ")) %>%
+  mutate(Department = str_remove(Department,"Department of "))
 ```
 
-Inspect data structure
+<!-- Inspect data structure -->
 
-```{r}
-str(dataset)
-```
+<!-- ```{r} -->
+<!-- str(dataset) -->
+<!-- ``` -->
 
-### Descriptive statistics
+**Descriptive statistics**
 
 First of all, descriptive statistics by nationality, college, department, and degree are presented.
 
@@ -43,11 +50,15 @@ dataset %>%
       vSize="n", title="Nationality"
   )
 
+knitr::kable(
 dataset %>%
   group_by(Nationality) %>%
   summarise(count = n()) %>%
   arrange(desc(count)) %>%
-  mutate( proportion = count / sum(count) * 100 )
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+
+) %>%
+  kable_styling(full_width = F)
 ```
 
 By college
@@ -55,17 +66,18 @@ By college
 ```{r}
 dataset %>%
   count(College, sort=TRUE) %>%
-  mutate(College=str_remove(College,"College of ")) %>%
   mutate(College=paste(College,n,sep="\n")) %>%
   treemap(index="College",
       vSize="n", title="College"
   )
+knitr::kable(
 dataset %>%
   group_by(College) %>%
   summarise(count = n()) %>%
   arrange(desc(count)) %>%
-  mutate( proportion = count / sum(count) * 100 )
-
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
 ```
 
 By department
@@ -73,17 +85,18 @@ By department
 ```{r}
 dataset %>%
   count(Department, sort=TRUE) %>%
-  mutate(Department=str_remove(Department,"Department of ")) %>%
   mutate(Department=paste(Department,n,sep="\n")) %>%
   treemap(index="Department",
       vSize="n", title="Department"
   )
+knitr::kable(
 dataset %>%
   group_by(Department) %>%
   summarise(count = n()) %>%
   arrange(desc(count)) %>%
-  mutate( proportion = count / sum(count) * 100 )
-
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
 ```
 
 By degree
@@ -95,47 +108,68 @@ dataset %>%
   treemap(index="Degree",
       vSize="n", title="Degree"
   )
+knitr::kable(
 dataset %>%
   group_by(Degree) %>%
   summarise(count = n()) %>%
   arrange(desc(count)) %>%
-  mutate( proportion = count / sum(count) * 100 )
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+**Interrelationship analysis**
+
+The results of multi-variate analysis are presented here.
+
+- Nationality and college
+- Nationality and department
+- Nationality and degree
+- Department and degree
+- Degree, nationality, and department
+- Degree, nationality, and college
+
+Nationality and college
+
+The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Nationality","College")
+```
+
+Nationality and department
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Nationality","Department")
+```
+
+Nationality and degree
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Nationality","Degree")
+```
+
+Department and degree
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Department","Degree")
+```
+
+Degree, nationality, and department
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Degree","Nationality","Department")
 
 ```
 
+<!-- Nationality, college, and department -->
 
-#### Relation analysis
+<!-- ```{r echo=FALSE, message=FALSE} -->
+<!-- mSankey(dataset,prefix,"Nationality","College","Department") -->
+<!-- ``` -->
 
-The relation between two variables are presented here.
+Degree, nationality, college
 
-- Nationality and College
-- Nationality and Department
-- Nationality and Degree
-- Department and Degree
-
-
-Relation between nationality and college
-
-```{r echo=FALSE}
-knitr::include_graphics("N_C.png")
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Degree","Nationality","College")
 ```
-
-Relation between nationality and department
-
-```{r echo=FALSE}
-knitr::include_graphics("N_Dept.png")
-```
-
-Relation between nationality and degree
-
-```{r echo=FALSE}
-knitr::include_graphics("N_D.png")
-```
-
-Relation between department and degree
-
-```{r echo=FALSE}
-knitr::include_graphics("D_Degree.png")
-```
-
-
