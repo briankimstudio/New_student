@@ -19,14 +19,14 @@ source("mSankey.R", local = knitr::knit_global())
 
 We analyzed data of 'admitted' international students from [National Chung Hsing University(NCHU,國立中興大學)](https://www.nchu.edu.tw) and [Feng Chia University(FCU,逢甲大學)](https://www.fcu.edu.tw). The results show that the trends are very different and international students are pursuing different goals in each university. 
 
-*For full analysis results, refer to [NCHU](NCHU_admission.html),[FCU](FCU_admission.html).
+*For full analysis results, refer to [NCHU](NCHU_admission.html), [FCU](FCU_admission.html).
 
 **Summary**
 
-- Indonesia is ranked first by the number of students in both NCHU and FCU.
-- NCHU attracts more students from India and Pakistan, whereas most Japanese students choose FCU.
-- NCHU is strong in agricultural and natural resources, engineering, but, FCU is focused on international business.
-- NCHU is the place for Master's and Ph.D., however, more students choose CFU for Bachelor's degree.
+- *Indonesia* is ranked first by the number of students in both NCHU and FCU.
+- NCHU attracts more students from *India* and *Pakistan*, whereas most *Japanese* students choose FCU.
+- NCHU is strong in *agricultural and natural resources, engineering*, but, FCU focuses on *international business*.
+- NCHU is the place for *Master's* and *Ph.D.*, however, students choose FCU for *Bachelor's degree*.
 
 Nationality
 
