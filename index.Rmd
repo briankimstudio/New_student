@@ -16,7 +16,7 @@ source("mSankey.R", local = knitr::knit_global())
 ```
 
 ### Where international students are from and what they study(work in progress)
-
+[Google翻譯繁體中文](index_cn.html)
 
 #### Summary
 
