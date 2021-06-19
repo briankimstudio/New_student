@@ -17,16 +17,24 @@ source("mSankey.R", local = knitr::knit_global())
 
 ### Where international students are from and what they study(work in progress)
 
-We analyzed data of 'admitted' international students from [National Chung Hsing University(NCHU,國立中興大學)](https://www.nchu.edu.tw) and [Feng Chia University(FCU,逢甲大學)](https://www.fcu.edu.tw). The results show that the trends are very different and international students are pursuing different goals in each university. 
+
+#### Summary
+
+
+- ***Indonesia*** is ranked first by the number of students in both NCHU and FCU.
+- NCHU attracts more students to ***India*** and ***Pakistan***, whereas most ***Japanese*** students choose FCU.
+- NCHU is strong in ***agricultural and natural resources, engineering***, but, FCU focuses on ***international business***.
+- NCHU is the place for ***Master's*** and ***Ph.D.***, however, students choose FCU for ***Bachelor's degree***.
+
+
+#### Introduction
+
+
+The data of international students admitted to [National Chung Hsing University(NCHU,國立中興大學)](https://www.nchu.edu.tw)(n=250) and [Feng Chia University(FCU,逢甲大學)](https://www.fcu.edu.tw)(n=365) are analyzed. The results show that the trends are very different and international students are pursuing different goals in each university. 
 
 *For full analysis results, refer to [NCHU](NCHU_admission.html), [FCU](FCU_admission.html).
 
-**Summary**
-
-- *Indonesia* is ranked first by the number of students in both NCHU and FCU.
-- NCHU attracts more students from *India* and *Pakistan*, whereas most *Japanese* students choose FCU.
-- NCHU is strong in *agricultural and natural resources, engineering*, but, FCU focuses on *international business*.
-- NCHU is the place for *Master's* and *Ph.D.*, however, students choose FCU for *Bachelor's degree*.
+#### Results
 
 Nationality
 
@@ -76,7 +84,7 @@ knitr::include_graphics(
 
 Nationality and college
 
-The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular
+The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular.
 
 ```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="NCHU"}
 prefix <- "NCHU"
