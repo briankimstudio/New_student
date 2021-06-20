@@ -6,8 +6,6 @@ library(htmlwidgets)
 library(webshot)
 library(treemap)
 
-
-
 drawTreemap <- function(ds, prefix, item) {
   svg(filename=paste0(prefix,"_",item,".svg"))
   ds %>%
