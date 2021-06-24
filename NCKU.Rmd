@@ -1,0 +1,178 @@
+---
+title: "Trends of international student admission in NCKU"
+author: "Brian"
+date: "6/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,fig.align = 'center')
+options(tibble.print_max = Inf)
+# options(digits=2)
+library(xlsx)
+library(tidyverse)
+library(ggplot2)
+library(networkD3)
+library(htmlwidgets)
+library(treemap)
+library(kableExtra)
+source("mSankey.R", local = knitr::knit_global())
+```
+
+We analyzed data of 'admitted' international students in 2021(n=468) to discover trends in higher education in Taiwan. (work in progress)
+
+<!-- #### Import data -->
+
+```{r}
+prefix <- "NCKU"
+dataset <- read.xlsx("NCKU_2021.xlsx","Sheet1",header=TRUE)
+dataset <- dataset %>%
+  mutate(College = str_remove(College,"College of ")) %>%
+  mutate(Department = str_remove(Department,"Department of |Inst. of "))
+```
+
+<!-- Inspect data structure -->
+
+<!-- ```{r} -->
+<!-- str(dataset) -->
+<!-- ``` -->
+
+**Descriptive statistics**
+
+First of all, descriptive statistics by nationality, college, department, and degree are presented.
+
+By nationality
+
+```{r}
+dataset %>%
+  count(Nationality, sort=TRUE) %>%
+  mutate(Nationality=paste(Nationality,n,sep="\n")) %>%
+  treemap(index="Nationality",
+      vSize="n", title="Nationality"
+  )
+
+knitr::kable(
+dataset %>%
+  group_by(Nationality) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+
+) %>%
+  kable_styling(full_width = F)
+```
+
+By college
+
+```{r}
+dataset %>%
+  count(College, sort=TRUE) %>%
+  mutate(College=paste(College,n,sep="\n")) %>%
+  treemap(index="College",
+      vSize="n", title="College"
+  )
+knitr::kable(
+dataset %>%
+  group_by(College) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+By department
+
+```{r}
+dataset %>%
+  count(Department, sort=TRUE) %>%
+  mutate(Department=paste(Department,n,sep="\n")) %>%
+  treemap(index="Department",
+      vSize="n", title="Department"
+  )
+knitr::kable(
+dataset %>%
+  group_by(Department) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+By degree
+
+```{r}
+dataset %>%
+  count(Degree, sort=TRUE) %>%
+  mutate(Degree=paste(Degree,n,sep="\n")) %>%
+  treemap(index="Degree",
+      vSize="n", title="Degree"
+  )
+knitr::kable(
+dataset %>%
+  group_by(Degree) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+**Interrelationship analysis**
+
+The results of multi-variate analysis are presented here.
+
+- Nationality and college
+- Nationality and department
+- Nationality and degree
+- Department and degree
+- Degree, nationality, and department
+- Degree, nationality, and college
+
+Nationality and college
+
+The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Nationality","College")
+```
+
+Nationality and department
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Nationality","Department")
+```
+
+Nationality and degree
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Nationality","Degree")
+```
+
+Department and degree
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Department","Degree")
+```
+
+Degree, nationality, and department
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Degree","Nationality","Department")
+
+```
+
+<!-- Nationality, college, and department -->
+
+<!-- ```{r echo=FALSE, message=FALSE} -->
+<!-- mSankey(dataset,prefix,"Nationality","College","Department") -->
+<!-- ``` -->
+
+Degree, nationality, college
+
+```{r echo=FALSE, message=FALSE}
+mSankey(dataset,prefix,"Degree","Nationality","College")
+```
+
+Go to [comparison](https://briankimstudio.github.io/New_student/)
