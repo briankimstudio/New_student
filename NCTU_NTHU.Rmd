@@ -1,0 +1,110 @@
+---
+title: "Comparative analysis between NCTU and NTHU"
+author: "Brian"
+date: "6/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(xlsx)
+library(tidyverse)
+library(ggplot2)
+library(networkD3)
+library(htmlwidgets)
+source("mSankey.R", local = knitr::knit_global())
+```
+
+### What do international students study?(work in progress)
+<!-- [Google翻譯繁體中文](index_cn.html) -->
+
+<!-- #### Summary -->
+
+<!-- - ***Indonesia*** is ranked first by the number of students in both NCHU and FCU. -->
+<!-- - NCHU attracts more students to ***India*** and ***Pakistan***, whereas most ***Japanese*** students choose FCU. -->
+<!-- - NCHU is strong in ***agricultural and natural resources, engineering***, but, FCU focuses on ***international business***. -->
+<!-- - NCHU is the place for ***Master's*** and ***Ph.D.***, however, students choose FCU for ***Bachelor's degree***. -->
+
+<!-- #### Introduction -->
+
+The data of international students admitted to [National Yang Ming Chiao Tung University國立陽明交通大學](https://www.nycu.edu.tw/en/)(2021,n=161) and [National Tsing Hua University國立清華大學](http://www.nthu.edu.tw/)(2020,n=176) are analyzed.
+<!-- The results show that the trends are very different and international students are pursuing different goals in each university. -->
+
+<!-- *For full analysis results, refer to [NCHU](NCHU_admission.html), [FCU](FCU_admission.html). -->
+
+<!-- #### Results -->
+
+<!-- Nationality -->
+
+<!-- In NCHU, Indonesia is ranked first by the number of students, followed by Vietnam, India, Pakistan, and Malaysia. The first place in FCU is also Indonesia, but, Japan appears to be the second-largest group, followed by Thailand, Vietnam, and India. While Pakistan is ranked in 4th place in NCHU, FCU has no students from the same country. -->
+
+<!-- ```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"} -->
+<!-- knitr::include_graphics( -->
+<!--   c("NCHU_Nationality.svg", -->
+<!--     "FCU_Nationality.svg") -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- College -->
+
+<!-- The college of agricultural and natural resources is the most preferred in NCHU. However, most students choose the college of business in FCU. In other words, while NCHU is strong in science and engineering, FCU shows strength in business. -->
+
+<!-- ```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"} -->
+<!-- knitr::include_graphics( -->
+<!--   c("NCHU_College.svg", -->
+<!--     "FCU_College.svg") -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- Department -->
+
+<!-- The two international programs(international bachelor program of agribusiness and international master program of agribusiness) attract a large group of international students in NCHU, followed by marketing, biomedical engineering, and mechanical engineering. In FCU, the pre-major program for international freshman students is ranked 1st, followed by international business, and international business administration in English. In particular, these three departments account for about 50% of all international students in FCU. -->
+
+<!-- ```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"} -->
+<!-- knitr::include_graphics( -->
+<!--   c("NCHU_Department.svg", -->
+<!--     "FCU_Department.svg") -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- Degree -->
+
+<!-- Nearly 70% of students are pursuing a Ph.D. or Master's degree in NCHU. By contrast, more than 60% of FCU's students are pursuing bachelor's degree. Only 6% plan to get Ph.D. in FCU. Particularly, all students from Pakistan study for Ph.D. or Master's degree in NCHU. -->
+
+<!-- ```{r, echo=FALSE, out.width="50%", fig.align = "center", fig.show='hold', fig.cap="NCHU(left) vs FCU(right)"} -->
+<!-- knitr::include_graphics( -->
+<!--   c("NCHU_Degree.svg", -->
+<!--     "FCU_Degree.svg") -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- **Interrelationship analysis** -->
+
+Degree and Department
+
+The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular.
+
+```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="National Yang Ming Chiao Tung University"}
+prefix <- "NCTU"
+dataset <- read.xlsx("NCTU_2020.xlsx","Sheet1",header=TRUE)
+dataset <- dataset %>%
+  mutate(College = str_remove(College,"College of ")) %>%
+  mutate(Department = str_remove(Department,"Department of "))
+mSankey(dataset,prefix,"Degree","Department")
+```
+
+
+```{r echo=FALSE, message=FALSE, fig.align = "center",  fig.cap="National Tsing Hua University"}
+prefix <- "NTHU"
+dataset <- read.xlsx("NTHU_2021.xlsx","Sheet1",header=TRUE)
+dataset <- dataset %>%
+  mutate(College = str_remove(College,"College of ")) %>%
+  mutate(Department = str_remove(Department,"Department of "))
+mSankey(dataset,prefix,"Degree","Department")
+```
+
+
+Note:
+
+1. "Admitted' international student indicates someone who has received an acceptance letter from the university.
+2. The accuracy of results would be increased if data of ‘enrolled’ international students are analyzed.
