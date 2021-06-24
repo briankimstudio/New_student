@@ -175,3 +175,6 @@ mSankey(dataset,prefix,"Degree","Nationality","College")
 ```
 
 Go to [comparison](https://briankimstudio.github.io/New_student/)
+
+```{r child = 'Menu.Rmd'}
+```

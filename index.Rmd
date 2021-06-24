@@ -32,12 +32,8 @@ source("mSankey.R", local = knitr::knit_global())
 
 The data of international students admitted to [National Chung Hsing University(NCHU,國立中興大學)](https://www.nchu.edu.tw)(n=250) and [Feng Chia University(FCU,逢甲大學)](https://www.fcu.edu.tw)(n=365) are analyzed. The results show that the trends are very different and international students are pursuing different goals in each university. 
 
-*For full analysis results, refer to 
-
-- [NCHU國立中興大學](NCHU_admission.html)
-- [FCU逢甲大學](FCU_admission.html)
-- [NCKU國立成功大學](NCKU.html)
-- [NCTU國立陽明交通大學,NTHU國立清華大學](NCTU_NTHU.html)
+```{r child = 'Menu.Rmd'}
+```
 
 #### Results
 

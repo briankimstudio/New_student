@@ -15,6 +15,7 @@ library(htmlwidgets)
 source("mSankey.R", local = knitr::knit_global())
 ```
 
+
 ### What do international students study?(work in progress)
 <!-- [Google翻譯繁體中文](index_cn.html) -->
 
@@ -103,6 +104,8 @@ dataset <- dataset %>%
 mSankey(dataset,prefix,"Degree","Department")
 ```
 
+```{r child = 'Menu.Rmd'}
+```
 
 Note:
 
