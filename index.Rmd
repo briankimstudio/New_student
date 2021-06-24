@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(xlsx)
+library(readxl)
 library(tidyverse)
 library(ggplot2)
 library(networkD3)
@@ -88,7 +88,8 @@ The height of rectangular indicates the number of students. The width of the lin
 
 ```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="NCHU"}
 prefix <- "NCHU"
-dataset <- read.xlsx("NCHU_2021.xlsx","Sheet1",header=TRUE)
+# dataset <- read.xlsx("NCHU_2021.xlsx","Sheet1",header=TRUE)
+dataset <- read_excel("NCHU_2021.xlsx","Sheet1",col_names=TRUE)
 dataset <- dataset %>%
   mutate(College = str_remove(College,"College of ")) %>%
   mutate(Department = str_remove(Department,"Department of "))
@@ -98,7 +99,7 @@ mSankey(dataset,prefix,"Nationality","College")
 
 ```{r echo=FALSE, message=FALSE, fig.align = "center",  fig.cap="FCU"}
 prefix <- "FCU"
-dataset <- read.xlsx("FCU_2020.xlsx","Sheet1",header=TRUE)
+dataset <- read_excel("FCU_2020.xlsx","Sheet1",col_names=TRUE)
 dataset <- dataset %>%
   mutate(College = str_remove(College,"College of ")) %>%
   mutate(Department = str_remove(Department,"Department of "))
