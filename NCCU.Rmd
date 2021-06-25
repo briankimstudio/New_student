@@ -1,0 +1,87 @@
+---
+title: "NCCU"
+author: "BK"
+date: "6/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,message=FALSE,fig.align = 'center')
+library(xlsx)
+library(tidyverse)
+library(ggplot2)
+library(networkD3)
+library(htmlwidgets)
+library(treemap)
+library(kableExtra)
+source("mSankey.R", local = knitr::knit_global())
+```
+
+
+### What do international students study?(work in progress)
+
+The data of international students admitted to [National Chengchi University國立政治大學](https://www.nccu.edu.tw)(2021,n=261) are analyzed.
+
+By department
+
+```{r}
+dataset <- read.xlsx("NCCU_2021.xlsx","Sheet1",header=TRUE)
+
+dataset %>%
+  count(Department, sort=TRUE) %>%
+  # mutate(Department = str_remove(Department,"[^A-Za-z. &()]")) %>%
+  mutate(Department = gsub("[^A-Za-z. &()]","",Department)) %>%
+  mutate(Department = paste(Department,n,sep="\n")) %>%
+  treemap(index="Department",
+      vSize="n", title="Department"
+  )
+knitr::kable(
+dataset %>%
+  group_by(Department) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate(Department = gsub("[^A-Za-z. &()]","",Department)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+By degree
+
+```{r}
+dataset %>%
+  count(Degree, sort=TRUE) %>%
+  mutate(Degree = gsub("[^A-Za-z. &()]","",Degree)) %>%
+  mutate(Degree=paste(Degree,n,sep="\n")) %>%
+  treemap(index="Degree",
+      vSize="n", title="Degree"
+  )
+knitr::kable(
+dataset %>%
+  group_by(Degree) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate(Degree = gsub("[^A-Za-z. &()]","",Degree)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+Degree and Department
+
+The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular.
+
+```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="National Chengchi University"}
+prefix <- "NCCU"
+dataset <- dataset %>%
+  mutate(Department = str_remove(Department,"Department of "))
+mSankey(dataset,prefix,"Degree","Department")
+```
+
+```{r child = 'Menu.Rmd'}
+```
+
+Note:
+
+1. "Admitted' international student indicates someone who has received an acceptance letter from the university.
+2. The accuracy of results would be increased if data of ‘enrolled’ international students are analyzed.
