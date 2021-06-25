@@ -10,7 +10,7 @@ output: html_document
 - [NCHU國立中興大學](NCHU_admission.html)
 - [FCU逢甲大學](FCU_admission.html)
 - [NCKU國立成功大學](NCKU.html)
-- [NCTU國立陽明交通大學](NCYU.html)
+- [NCTU國立陽明交通大學](NYCU.html)
 - [NTHU國立清華大學](NTHU.html)
 - [NCCU國立政治大學](NCCU.html)
 
