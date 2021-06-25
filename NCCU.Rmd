@@ -26,7 +26,8 @@ dataset <- read.xlsx(fName,"Sheet1",header=TRUE)
 dataset <- dataset %>% mutate(Department = gsub("[^A-Za-z. &()]","",Department),
                               Degree = gsub("[^A-Za-z. &()]","",Degree))
 dataset <- dataset %>% 
-  mutate(Department = str_remove(Department,"Department of |Dept. of ")) 
+  mutate(Department = str_remove(Department,
+                                 "Department of |Dept. of |Graduate Institute of ")) 
 
 nSize <- dataset %>% count()
 ```
