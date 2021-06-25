@@ -26,11 +26,13 @@ By department
 
 ```{r}
 dataset <- read.xlsx("NCCU_2021.xlsx","Sheet1",header=TRUE)
+dataset <- dataset %>% mutate(Department = gsub("[^A-Za-z. &()]","",Department),
+                              Degree = gsub("[^A-Za-z. &()]","",Degree))
 
 dataset %>%
   count(Department, sort=TRUE) %>%
   # mutate(Department = str_remove(Department,"[^A-Za-z. &()]")) %>%
-  mutate(Department = gsub("[^A-Za-z. &()]","",Department)) %>%
+  mutate(Department = str_remove(Department,"Department of |Dept. of ")) %>%
   mutate(Department = paste(Department,n,sep="\n")) %>%
   treemap(index="Department",
       vSize="n", title="Department"
@@ -40,7 +42,7 @@ dataset %>%
   group_by(Department) %>%
   summarise(count = n()) %>%
   arrange(desc(count)) %>%
-  mutate(Department = gsub("[^A-Za-z. &()]","",Department)) %>%
+  mutate(Department = str_remove(Department,"Department of |Dept. of ")) %>%
   mutate( "%" = round(count / sum(count) * 100 ,1))
 ) %>%
   kable_styling(full_width = F)
@@ -51,7 +53,6 @@ By degree
 ```{r}
 dataset %>%
   count(Degree, sort=TRUE) %>%
-  mutate(Degree = gsub("[^A-Za-z. &()]","",Degree)) %>%
   mutate(Degree=paste(Degree,n,sep="\n")) %>%
   treemap(index="Degree",
       vSize="n", title="Degree"
@@ -61,7 +62,6 @@ dataset %>%
   group_by(Degree) %>%
   summarise(count = n()) %>%
   arrange(desc(count)) %>%
-  mutate(Degree = gsub("[^A-Za-z. &()]","",Degree)) %>%
   mutate( "%" = round(count / sum(count) * 100 ,1))
 ) %>%
   kable_styling(full_width = F)
@@ -72,9 +72,9 @@ Degree and Department
 The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular.
 
 ```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="National Chengchi University"}
-prefix <- "NCCU"
+# prefix <- "NCCU"
 dataset <- dataset %>%
-  mutate(Department = str_remove(Department,"Department of "))
+  mutate(Department = str_remove(Department,"Department of |Dept. of "))
 mSankey(dataset,prefix,"Degree","Department")
 ```
 
