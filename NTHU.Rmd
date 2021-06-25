@@ -1,0 +1,91 @@
+---
+title: "NTHU"
+author: "BK"
+date: "6/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, fig.align = 'center')
+library(xlsx)
+library(tidyverse)
+library(ggplot2)
+library(networkD3)
+library(htmlwidgets)
+library(treemap)
+library(kableExtra)
+source("mSankey.R", local = knitr::knit_global())
+
+sName <- "National Tsing Hua University國立清華大學"
+sURL  <- "http://www.nthu.edu.tw"
+sCode <- "NTHU"
+sYear <- "2021"
+fName <- paste0(sCode,"_",sYear,".xlsx")
+
+dataset <- read.xlsx(fName,"Sheet1",header=TRUE)
+dataset <- dataset %>% mutate(Department = gsub("[^A-Za-z. &()]","",Department),
+                              Degree = gsub("[^A-Za-z. &()]","",Degree))
+dataset <- dataset %>% 
+  mutate(Department = str_remove(Department,"Department of |Dept. of |Inst. of ")) 
+
+nSize <- dataset %>% count()
+```
+
+
+### What do international students study?(work in progress)
+
+The data of international students admitted to [`r sName`](`r sURL`)(`r sYear`,n=`r nSize`) are analyzed.
+
+By department
+
+```{r}
+dataset %>%
+  count(Department, sort=TRUE) %>%
+  mutate(Department = paste(Department,n,sep="\n")) %>%
+  treemap(index="Department",
+      vSize="n", title="Department"
+  )
+knitr::kable(
+dataset %>%
+  group_by(Department) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+By degree
+
+```{r}
+dataset %>%
+  count(Degree, sort=TRUE) %>%
+  mutate(Degree=paste(Degree,n,sep="\n")) %>%
+  treemap(index="Degree",
+      vSize="n", title="Degree"
+  )
+knitr::kable(
+dataset %>%
+  group_by(Degree) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  mutate( "%" = round(count / sum(count) * 100 ,1))
+) %>%
+  kable_styling(full_width = F)
+```
+
+Degree and Department
+
+The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular.
+
+```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="National Chengchi University"}
+mSankey(dataset,prefix,"Degree","Department")
+```
+
+```{r child = 'Menu.Rmd'}
+```
+
+Note:
+
+1. "Admitted' international student indicates someone who has received an acceptance letter from the university.
+2. The accuracy of results would be increased if data of ‘enrolled’ international students are analyzed.
