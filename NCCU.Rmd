@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,message=FALSE,fig.align = 'center')
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, fig.align = 'center')
 library(xlsx)
 library(tidyverse)
 library(ggplot2)
@@ -15,24 +15,32 @@ library(htmlwidgets)
 library(treemap)
 library(kableExtra)
 source("mSankey.R", local = knitr::knit_global())
+
+sName <- "National Chengchi University國立政治大學"
+sURL  <- "https://www.nccu.edu.tw"
+sCode <- "NCCU"
+sYear <- "2021"
+fName <- paste0(sCode,"_",sYear,".xlsx")
+
+dataset <- read.xlsx(fName,"Sheet1",header=TRUE)
+dataset <- dataset %>% mutate(Department = gsub("[^A-Za-z. &()]","",Department),
+                              Degree = gsub("[^A-Za-z. &()]","",Degree))
+dataset <- dataset %>% 
+  mutate(Department = str_remove(Department,"Department of |Dept. of ")) 
+
+nSize <- dataset %>% count()
 ```
 
 
 ### What do international students study?(work in progress)
 
-The data of international students admitted to [National Chengchi University國立政治大學](https://www.nccu.edu.tw)(2021,n=261) are analyzed.
+The data of international students admitted to [`r sName`](`r sURL`)(`r sYear`,n=`r nSize`) are analyzed.
 
 By department
 
 ```{r}
-dataset <- read.xlsx("NCCU_2021.xlsx","Sheet1",header=TRUE)
-dataset <- dataset %>% mutate(Department = gsub("[^A-Za-z. &()]","",Department),
-                              Degree = gsub("[^A-Za-z. &()]","",Degree))
-
 dataset %>%
   count(Department, sort=TRUE) %>%
-  # mutate(Department = str_remove(Department,"[^A-Za-z. &()]")) %>%
-  mutate(Department = str_remove(Department,"Department of |Dept. of ")) %>%
   mutate(Department = paste(Department,n,sep="\n")) %>%
   treemap(index="Department",
       vSize="n", title="Department"
@@ -42,7 +50,6 @@ dataset %>%
   group_by(Department) %>%
   summarise(count = n()) %>%
   arrange(desc(count)) %>%
-  mutate(Department = str_remove(Department,"Department of |Dept. of ")) %>%
   mutate( "%" = round(count / sum(count) * 100 ,1))
 ) %>%
   kable_styling(full_width = F)
@@ -72,9 +79,6 @@ Degree and Department
 The height of rectangular indicates the number of students. The width of the line indicates the number of students between connected rectangular.
 
 ```{r echo=FALSE, message=FALSE,  fig.align = "center", fig.cap="National Chengchi University"}
-# prefix <- "NCCU"
-dataset <- dataset %>%
-  mutate(Department = str_remove(Department,"Department of |Dept. of "))
 mSankey(dataset,prefix,"Degree","Department")
 ```
 
