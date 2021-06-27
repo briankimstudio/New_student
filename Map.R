@@ -43,3 +43,36 @@ ggplot() +
   geom_point( data=data %>% arrange(pop) %>% tail(10), aes(x=long, y=lat), color="red", size=3) +
   theme_void() + ylim(50,59) + coord_map() +
   theme(legend.position="none")
+
+# Draw src and dst on world map
+# Dplyr for data wrangling and pipe function
+library(maps)
+library(dplyr)
+library(geosphere)
+
+# Cities
+Buenos_aires <- c(-58,-34)
+Paris <- c(2,49)
+Melbourne <- c(145,-38)
+
+# Data frame
+data <- rbind(Buenos_aires, Paris, Melbourne) %>% 
+  as.data.frame()
+colnames(data) <- c("long","lat")
+
+# Show the cities on the map
+map('world',
+    col="#f2f2f2", fill=TRUE, bg="white", lwd=0.05,
+    mar=rep(0,4),border=0, ylim=c(-50,80) 
+)
+
+points(x=data$long, y=data$lat, col="slateblue", cex=3, pch=20)
+# Compute the connection between Buenos Aires and Paris
+inter <- gcIntermediate(Paris,  Buenos_aires, n=50, addStartEnd=TRUE, breakAtDateLine=F)
+
+# Show this connection
+lines(inter, col="slateblue", lwd=2)
+
+# Between Paris and Melbourne
+inter <- gcIntermediate(Melbourne,  Paris, n=50, addStartEnd=TRUE, breakAtDateLine=F)             
+lines(inter, col="slateblue", lwd=2)
