@@ -4,7 +4,10 @@ library(hrbrthemes)
 library(readxl)
 showtext_auto()
 
+
 data <- read_excel("Degree.xlsx",sheet="Sheet1",col_names = T)
+data %>% group_by(University) %>% summarise (sum=sum(N))
+
 ggplot(data, aes(fill=Degree, y=N, x=University)) + 
   labs(title="The number of students by degree") +
   theme(plot.title = element_text(hjust = 0.5)) +
