@@ -1,0 +1,92 @@
+---
+title: "International students in Taiwan"
+author: "Brian"
+date: "6/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library(ggrepel)
+library(viridis)
+library(kableExtra)
+dataset <- read_excel(path = "109_ab108.xlsx",sheet=2,col_names = TRUE)
+countries <- read_excel(path="Countries.xlsx", sheet=1,col_names = TRUE)
+coordinates <- read_excel(path="Coordinates.xlsx", sheet=1,col_names = TRUE)
+data <- dataset %>% left_join(select(countries,Country,Chinese),by=c("Country"="Chinese"))
+data <- data %>% select(Country.y,Degree,Exchange,Language)
+colnames(data)=c('Country','Degree','Exchange','Language')
+data <- data %>% left_join(select(coordinates,Country,latitude,longitude),coordinates,by='Country')
+
+worldmap <-  maps::map("world", fill=TRUE, plot=FALSE) %>%
+  maptools::pruneMap(xlim = c(-180,180), ylim = c(-60,80))
+```
+
+### Degree-seeking students in Taiwan
+
+```{r, out.width="100%", fig.align='center',fig.cap="The number of degree-seeking students in Taiwan (By country)"}
+ggplot(data= broom::tidy(worldmap)) + 
+  geom_polygon(mapping = aes(x = long, y = lat, group = group), 
+               fill =  "#B3B1B5", color = "white",size = 0.2) +
+  geom_point( data=data %>% filter(Degree>9) %>% arrange(Degree), aes(size=Degree, color=Degree, x=longitude, y=latitude)) +
+  geom_text_repel( data=data %>% filter(Degree>9) %>% arrange(desc(Degree)), aes(x=longitude, y=latitude, label=paste(Country,Degree)), size=2) +
+  scale_color_viridis() +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title="The number of degree-seeking students in Taiwan (By country)") +
+  coord_map()
+
+```
+
+```{r}
+knitr::kable(row.names = T,format.args = list(big.mark = ","),
+  data %>% select(Country,Degree) %>% arrange(desc(Degree)) %>% head(20)) %>%
+  kable_styling(full_width = F)
+```
+
+### Language course students in Taiwan
+
+```{r, out.width="100%", fig.align='center',fig.cap="The number of language course students in Taiwan (By country)"}
+ggplot(data= broom::tidy(worldmap)) + 
+  geom_polygon(mapping = aes(x = long, y = lat, group = group), 
+               fill =  "#B3B1B5", color = "white",size = 0.2) +
+  geom_point( data=data %>% filter(Language>9) %>% arrange(Language), aes(size=Degree, color=Language, x=longitude, y=latitude)) +
+  geom_text_repel( data=data %>% filter(Language>9), aes(x=longitude, y=latitude, label=paste(Country,Language)), size=2) +
+  scale_color_viridis() +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title="The number of language course students in Taiwan (By country)") +
+  coord_map()
+
+```
+
+```{r}
+knitr::kable(row.names = T,format.args = list(big.mark = ","),
+  data %>% select(Country,Language) %>% arrange(desc(Language)) %>% head(20)) %>%
+  kable_styling(full_width = F)
+```
+
+### Exchange students in Taiwan
+
+```{r, out.width="100%", fig.align='center',fig.cap="The number of exchange students in Taiwan (By country)"}
+ggplot(data= broom::tidy(worldmap)) + 
+  geom_polygon(mapping = aes(x = long, y = lat, group = group), 
+               fill =  "#B3B1B5", color = "white",size = 0.2) +
+  geom_point( data=data %>% filter(Exchange>9) %>% arrange(Exchange), aes(size=Degree, color=Exchange, x=longitude, y=latitude)) +
+  geom_text_repel( data=data %>% filter(Exchange>9), aes(x=longitude, y=latitude, label=paste(Country,Exchange)), size=2) +
+  scale_color_viridis() +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title="The number of exchange students in Taiwan (By country)") +
+  coord_map()
+
+```
+
+```{r}
+knitr::kable(row.names = T,format.args = list(big.mark = ","),
+  data %>% select(Country,Exchange) %>% arrange(desc(Exchange)) %>% head(20)) %>%
+  kable_styling(full_width = F)
+```
