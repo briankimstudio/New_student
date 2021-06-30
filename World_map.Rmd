@@ -76,6 +76,8 @@ smap <- function(data, label, field) {
 }
 ```
 
+This analysis is based on the data published in 2020 by [National Statistics, Taiwan](https://www1.stat.gov.tw/ct.asp?xItem=15423&CtNode=4708&mp=3).
+
 ### Summary
 
 #### Degree seeking
