@@ -1,0 +1,83 @@
+---
+title: "TOPIK"
+author: "BK"
+date: "7/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library(ggrepel)
+library(viridis)
+library(kableExtra)
+
+dataset <- read_excel(path = "TOPIK.xlsx",sheet=2,col_names = TRUE)
+countries <- read_excel(path="Countries.xlsx", sheet=1,col_names = TRUE)
+coordinates <- read_excel(path="Coordinates.xlsx", sheet=1,col_names = TRUE)
+data <- dataset %>% left_join(select(countries,Country,Chinese),by=c("Country"="Chinese"))
+data <- data %>% select(Country.y,Degree,Exchange,Language)
+colnames(data)=c('Country','Degree','Exchange','Language')
+data <- data %>% left_join(select(coordinates,Country,latitude,longitude),coordinates,by='Country')
+
+worldmap <-  maps::map("world", fill=TRUE, plot=FALSE) %>%
+  maptools::pruneMap(xlim = c(-180,180), ylim = c(-60,80))
+mapdata <-broom::tidy(worldmap)
+mapdata$region <- str_replace(mapdata$region,"UK","United Kingdoms")
+mapdata$region <- str_replace(mapdata$region,"USA","United States")
+mapdata <- left_join(mapdata,data,by=c("region"="Country"))
+# a<-aaa %>% filter(is.na(Degree)) %>% distinct(region)
+mapdata$Degree[mapdata$Degree==0] <-0.1
+mapdata$Degree[is.na(mapdata$Degree)] <-0.1
+mapdata$Exchange[mapdata$Exchange==0] <-0.1
+mapdata$Exchange[is.na(mapdata$Exchange)] <-0.1
+mapdata$Language[mapdata$Language==0] <-0.1
+mapdata$Language[is.na(mapdata$Language)] <-0.1
+
+# a<-aaa %>% count(Degree)
+
+smap <- function(data, label, field) {
+  ggplot() +
+    geom_polygon(data=data, aes(fill=!!sym(field), x = long, y = lat, group = group),color="grey",size=0.1) +
+    theme_void() +
+    scale_fill_gradient(trans="log",low="yellow",high="red",
+                        breaks=c(1,100,500,1000,10000),
+                        name="Number of students",
+                        guide = guide_legend( keyheight = unit(3, units = "mm"),
+                                              keywidth  = unit(12, units = "mm"),
+                                              label.position = "bottom",
+                                              title.position = 'top', nrow=1)
+                        
+    ) +
+    geom_text_repel( data=label %>% arrange(desc(!!sym(field))) %>% head(16),
+                     aes(x=longitude, y=latitude, label=paste(Country,!!sym(field))),
+                     size=3) +
+    labs(
+      title = "Origins of international students in Taiwan",
+      subtitle = paste(field,"students"),
+      caption = "By Innovation Formosa. Data: National statistics, Taiwan"
+    ) +
+    theme(
+      text = element_text(color = "#22211d"),
+      plot.background = element_rect(fill = "#f5f5f2", color = NA),
+      panel.background = element_rect(fill = "#f5f5f2", color = NA),
+      legend.background = element_rect(fill = "#f5f5f2", color = NA),
+      
+      plot.title = element_text(size= 12, hjust=0.5, color = "#4e4d47"),
+      plot.subtitle = element_text(size= 10, hjust=0.5, color = "#4e4d47",
+                                   margin = margin(b = 0.5,  unit = "cm")),
+      plot.caption = element_text( size=8, hjust=0.5, color = "#4e4d47"),
+      
+      legend.position = c(0.7, 0.09)
+    ) +
+    
+    coord_map()
+}
+```
+
+## R Markdown
+```{r, out.width="100%", fig.align='center',fig.cap="The number of degree-seeking students in Taiwan (By country)"}
+smap(mapdata,data,"Degree")
+```
